@@ -1,0 +1,246 @@
+:root {
+  --paper: #faf6ee;
+  --card: #fffdf8;
+  --ink: #2d2a26;
+  --muted: #8a8178;
+  --line: #e4dccd;
+  --x: #d1495b;
+  --o: #2e86ab;
+  --win: #3c8d5a;
+  --lose: #b5553b;
+  --draw: #b8860b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image: radial-gradient(#e6dccb 1px, transparent 1px);
+  background-size: 22px 22px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 460px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 26px 24px 22px;
+  box-shadow: 0 1px 0 #d8cfbd, 0 12px 30px rgba(60, 40, 10, 0.08);
+}
+
+header {
+  text-align: center;
+  border-bottom: 2px dashed var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+h1 {
+  font-size: 2rem;
+  font-style: italic;
+  font-weight: 700;
+}
+.tagline {
+  margin-top: 6px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Scoreboard */
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.stat {
+  text-align: center;
+  padding: 10px 4px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fff;
+}
+.stat-label {
+  display: block;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+.stat-value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.stat:nth-child(1) .stat-value { color: var(--x); }
+.stat:nth-child(2) .stat-value { color: var(--o); }
+.stat:nth-child(3) .stat-value { color: var(--draw); }
+.stat.streak .stat-value { color: var(--win); }
+
+/* Status line */
+.status {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-bottom: 14px;
+  padding: 0 6px;
+}
+.status.win      { color: var(--win); }
+.status.lose     { color: var(--lose); }
+.status.draw     { color: var(--draw); }
+.status.thinking { color: var(--o); }
+
+/* Board: ink-drawn grid lines */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: min(300px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto 18px;
+}
+.cell {
+  font: inherit;
+  font-size: 3.4rem;
+  font-weight: 700;
+  background: transparent;
+  border: 0;
+  border-right: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.cell:nth-child(3n)   { border-right: 0; }
+.cell:nth-child(n+7)  { border-bottom: 0; }
+.cell:not(:disabled):hover { background: rgba(45, 42, 38, 0.05); }
+.cell:focus-visible { outline: 2px solid var(--o); outline-offset: -4px; }
+.cell:disabled { cursor: default; }
+.cell.won { background: rgba(60, 141, 90, 0.16); }
+
+.mark { display: inline-block; animation: pop 0.25s ease-out; }
+.mark.x { color: var(--x); }
+.mark.o { color: var(--o); }
+@keyframes pop {
+  0%   { transform: scale(0.3) rotate(-12deg); opacity: 0; }
+  70%  { transform: scale(1.1) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.btn {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn:hover:not(:disabled) { background: var(--ink); color: var(--card); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn:focus-visible { outline: 2px solid var(--o); outline-offset: 2px; }
+.btn-primary { background: var(--ink); color: var(--card); }
+.btn-primary:hover:not(:disabled) { background: #000; }
+.btn-danger { border-color: var(--lose); color: var(--lose); }
+.btn-danger:hover:not(:disabled) { background: var(--lose); color: #fff; }
+
+.hint {
+  text-align: center;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+kbd {
+  font-family: inherit;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0 5px;
+  background: #fff;
+  color: var(--ink);
+}
+
+/* History as rubber-stamp marks */
+.history-title {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 34px;
+  align-items: center;
+}
+.stamp {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  transform: rotate(-3deg);
+  cursor: default;
+}
+.stamp:nth-child(even) { transform: rotate(2deg); }
+.stamp.win  { color: var(--win); }
+.stamp.lose { color: var(--lose); }
+.stamp.draw { color: var(--draw); }
+.empty {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .wrap { padding: 20px 14px; }
+  h1 { font-size: 1.6rem; }
+  .cell { font-size: 2.6rem; }
+  .stat-value { font-size: 1.3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
